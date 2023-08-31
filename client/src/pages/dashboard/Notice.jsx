@@ -65,15 +65,17 @@ const Notice = () => {
     setOpen(true);
     event.preventDefault();
 
-    if (user && sub && files) {
+    if (user && sub ) {
       var formData = new FormData();
       formData.append("user", user);
       formData.append("sub", sub);
       // formData.append("notice", notice);
 
+     if(files.length>0){
       for (var i = 0; i < files.length; i++) {
         formData.append("files", files[i]);
       }
+     }
 
       let res = await axios.post(`${url}/create/notice`, formData, {
         headers: {
@@ -308,6 +310,8 @@ const Notice = () => {
                       <b>Published on</b>: {date}
                     </p>
                     <p class="truncate text-sm font-medium text-gray-900 dark:text-white">
+                     {
+                      file.length>0 ?
                       <a
                         pdf
                         className="text-red-300"
@@ -315,7 +319,11 @@ const Notice = () => {
                         target="blank"
                       >
                         {subject}
-                      </a>
+                      </a>:
+                     <p>
+                     {subject}
+                     </p>
+                     }
 
                       {i == 0 && <img src={pic} alt="" />}
                     </p>

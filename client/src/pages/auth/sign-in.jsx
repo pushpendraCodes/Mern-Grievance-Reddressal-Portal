@@ -1,19 +1,15 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Input,
-  Button,
-  Typography,
-} from "@material-tailwind/react";
+import OtpInput from "react-otp-input";
+import {} from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
 import axios from "axios";
 import { BsEyeSlash } from "react-icons/bs";
 import { BsEye } from "react-icons/bs";
@@ -92,9 +88,9 @@ export function SignIn() {
     validationSchema: Yup.object().shape({
       email: Yup.string()
         .min(1, "Mininum 1 characters")
-        .max(30, "Maximum 30 characters")
+        .max(50, "Maximum 30 characters")
         .required("email is required"),
-      password: Yup.string().max(20).required("Password is required"),
+      password: Yup.string().max(30).required("Password is required"),
     }),
     initialValues: {
       email: "",
@@ -114,14 +110,122 @@ export function SignIn() {
       )
     );
   };
+  const [email, setemail] = useState("");
+  const [MSG, setMSG] = useState("");
+  const [isValid, setvalid] = useState(false);
+  const [pw, setpw] = useState("");
+  const [c_pw, setc_pw] = useState("");
   const [bg, setbg] = useState("light");
+  const [open_modal, setOpen_modal] = useState(false);
+  const handleOpen = () => setOpen_modal(true);
+  const handleClose = () => setOpen_modal(false);
+  const [otp, setOtp] = useState("");
+  const submit = async () => {
+    let res = await axios.post(`${url}/check/email`, { email: email });
+
+    if (res.status === 200) {
+      setvalid(true);
+    } else {
+      setemail(null);
+      setMSG(res.data.msg);
+    }
+  };
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "1px solid #000",
+    boxShadow: 24,
+    borderRadius: "5px",
+    p: 4,
+  };
   return (
     <>
+      <div>
+        <Modal
+          open={open_modal}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <Typography
+              className="my-2 "
+              id="modal-modal-title"
+              variant="h6"
+              component="h2"
+            >
+              Reset Password
+            </Typography>
 
+            <TextField
+              onChange={(e) => {
+                setemail(e.target.value);
+              }}
+              id="standard-basic"
+              label="Email"
+              className="my-2 "
+              sx={{ width: "35ch" }}
+              variant="standard"
+            />
+            {isValid && (
+              <OtpInput
+                value={otp}
+                onChange={setOtp}
+                numInputs={4}
+                renderSeparator={<span>-</span>}
+                renderInput={(props) => <input {...props} />}
+              />
+            )}
+            {/* {isValid && (
+              <>
+                <TextField
+                  onChange={(e) => {
+                    setemail(e.target.value);
+                  }}
+                  id="standard-basic"
+                  label="Email"
+                  className="my-2 "
+                  sx={{ width: "35ch" }}
+                  variant="standard"
+                />
+                <TextField
+                  onChange={(e) => {
+                    setemail(e.target.value);
+                  }}
+                  id="standard-basic"
+                  label="Email"
+                  className="my-2 "
+                  sx={{ width: "35ch" }}
+                  variant="standard"
+                />
+              </>
+            )} */}
+
+            <br />
+            <Typography className="my-1 text-red-500" id="modal-modal-title">
+              {MSG}
+            </Typography>
+            <br />
+            <Button
+              variant="contained"
+              className="my-3"
+              size="small"
+              color="primary"
+              onClick={submit}
+            >
+              Submit
+            </Button>
+          </Box>
+        </Modal>
+      </div>
 
       <section style={{ backgroundColor: bg }} class="h-screen  ">
-      <ToastContainer />
-      <div>
+        <ToastContainer />
+        <div>
           <Backdrop
             sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
             open={open}
@@ -130,8 +234,37 @@ export function SignIn() {
           </Backdrop>
         </div>
 
+        <div class="flex flex-row items-center justify-center lg:justify-end">
+          <Link to="/frontpage" className="flex">
+            <FaHome
+              className="mx-2"
+              style={{ color: bg === "black" ? "white" : "black" }}
+              fontSize={20}
+            />
+          </Link>
+
+          <MdLightMode
+            className="mx-2 cursor-pointer "
+            onClick={() => {
+              setbg("white");
+            }}
+            fontSize={25}
+          />
+
+          <MdDarkMode
+            style={{ color: bg === "black" ? "white" : "gray" }}
+            className="cursor-pointer mr-2"
+            onClick={() => {
+              setbg("black");
+            }}
+            fontSize={25}
+          />
+        </div>
+
         <div class="h-full">
-<h1 className="text-center font-semibold text-green-300 ">Student E-Grievance Reddresal Portal</h1>
+          <h1 className="text-center font-semibold text-green-300 ">
+            Student E-Grievance Reddresal Portal
+          </h1>
 
           <div class="g-6 flex h-full flex-wrap items-center justify-center lg:justify-between">
             <div class="shrink-1 mb-12 grow-0 basis-auto md:mb-0 md:w-9/12 md:shrink-0 lg:w-6/12 xl:w-6/12">
@@ -144,29 +277,11 @@ export function SignIn() {
 
             <div class="mb-12 md:mb-0 md:w-8/12 lg:w-5/12 xl:w-5/12">
               <form onSubmit={validation.handleSubmit}>
-                <div class="flex flex-row items-center justify-center lg:justify-evenly">
-                  <MdLightMode
-                    className="cursor-pointer mx-2 "
-
-                    onClick={() => {
-                      setbg("white");
-                    }}
-                    fontSize={25}
-                  />
-
-                  <MdDarkMode
-   style={{color:bg==="black"?"white":"gray"}}
-                    className="cursor-pointer"
-                    onClick={() => {
-                      setbg("black");
-                    }}
-                    fontSize={25}
-                  />
-                </div>
-
                 <div class="before:border-neutral-300 after:border-neutral-300 my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t after:mt-0.5 after:flex-1 after:border-t">
-                  <p    style={{color:bg==="black"?"white":"black"}} class="mx-4 mb-0 text-center font-semibold dark:text-white">
-
+                  <p
+                    style={{ color: bg === "black" ? "white" : "black" }}
+                    class="mx-4 mb-0 text-center font-semibold dark:text-white"
+                  >
                     Login
                   </p>
                 </div>
@@ -187,9 +302,7 @@ export function SignIn() {
                     placeholder="Email address"
                   />
                   {formiKMessage("email")}
-
                 </div>
-
 
                 <div
                   style={{ borderBottom: "1px solid gray" }}
@@ -239,12 +352,12 @@ export function SignIn() {
                 </div>
 
                 <div class="mb-6 flex items-center justify-between">
-                  <a className="text-blue-500" href="#!">
+                  <a onClick={handleOpen} className="text-blue-500" href="#!">
                     Forgot password?
                   </a>
                 </div>
 
-                <div class="text-center lg:text-left">
+                <div class=" lg:text-left">
                   <button
                     class="bg-primary hover:bg-primary-600 focus:bg-primary-600 active:bg-primary-700 inline-block rounded px-7 pb-2.5 pt-3 text-sm font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                     data-te-ripple-init
@@ -256,10 +369,6 @@ export function SignIn() {
                   <br />
                 </div>
                 <div className="my-5 flex justify-evenly">
-                  <Link to="/frontpage" className="flex">
-
-                    <FaHome className="mx-2"  style={{color:bg==="black"?"white":"black"}} fontSize={20} />
-                  </Link>
                   <p class="mb-0  text-sm font-semibold">
                     Don't have an account?
                     <Link to="/auth/sign-up">

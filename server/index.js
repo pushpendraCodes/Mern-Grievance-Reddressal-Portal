@@ -9,6 +9,8 @@ app.use(express.json())
 app.use('/upload', express.static('upload'));
 // const router = require("./routes/user")
 
+app.use(express.static(path.resolve(__dirname, 'dist')));
+
 app.use("/" ,require("./routes/user"))
 app.use("/" ,require("./routes/grievance"))
 app.use("/" ,require("./routes/notice"))

@@ -4,27 +4,24 @@ const router = express.Router();
 const users = require("../Modals/users");
 const bcrypt = require("bcryptjs");
 let jwt = require("jsonwebtoken");
-let nodemailer = require("nodemailer");
+const otpGenerator = require("otp-generator");
 let jwtkey = process.env.REACT_JWT_KEY;
 const verify_token = require("../MiddileWare/Auth");
 const { getEventListeners } = require("nodemailer/lib/xoauth2");
-const mail_pass = process.env.REACT_GMAIL_KEY;
-const email = process.env.REACT_EMAIL;
+
+const mailTransporter = require("../MiddileWare/nodemailer");
 const validator = require("validator");
 router.post("/api/login", async (req, res) => {
-
-
   if (req.body.email && req.body.password) {
     let user = await users.findOne({
       email: req.body.email,
     });
-
+    // console.log(req.body.password);
     if (user && user.is_active === true) {
       bcrypt.compare(req.body.password, user.password, (err, result) => {
-        console.log(result,"user")
-          console.log(user,"user")
+        // console.log(result, "user");
+        // console.log(user, "user");
         if (result) {
-
           const token = jwt.sign(
             {
               username: user.username,
@@ -148,7 +145,6 @@ router.delete("/delete/request/:id", verify_token, async (req, res) => {
   }
 });
 
-
 router.post("/get/students/details/:id", async (req, res) => {
   let result = await users.findById({
     _id: req.params.id,
@@ -160,34 +156,11 @@ router.post("/get/students/details/:id", async (req, res) => {
 });
 
 router.post("/send/details", verify_token, async (req, res) => {
-  let password = `${req.body.name.split(" ").join("")}${req.body.mobile}@ `;
+  let password = `${req.body.name.split(" ").join("")}${req.body.mobile}@`;
 
   let pw = await bcrypt.hash(password, 10);
 
-  let result = await users.findByIdAndUpdate(
-    {
-      _id: req.body._id,
-    },
-    {
-      $set: {
-        is_active: true,
-        password: pw,
-      },
-    },
-    {
-      returnNewDocument: true,
-    }
-  );
-
   validator.isEmail(req.body.email);
-
-  let mailTransporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: email,
-      pass: mail_pass,
-    },
-  });
 
   let mailDetails = {
     from: process.env.REACT_EMAIL,
@@ -196,10 +169,30 @@ router.post("/send/details", verify_token, async (req, res) => {
     html: ` <p> you are recieving because you are(someone) You have registerd to grievence portal <br/> <b> email:</b> ${req.body.email} <br/> <b>Paaword</b>: ${password}  </p>`,
   };
 
-  mailTransporter.sendMail(mailDetails, function (err, data) {
-    if (data && result) {
-      res.status(200).send({ result: "Email sent successfully" });
+
+
+  mailTransporter.sendMail(mailDetails, async function (err, data) {
+    if (data) {
+
+     await  users.findByIdAndUpdate(
+        {
+          _id: req.body._id,
+        },
+        {
+          $set: {
+            is_active: true,
+            password: pw,
+          },
+        },
+        {
+          returnNewDocument: true,
+        }
+      );
+
+        res.status(200).send({ result: "Email sent successfully" });
+
     } else {
+      console.log(err, "err");
       res.status(203).send({ result: "something went wrong" });
     }
   });
@@ -250,6 +243,40 @@ router.delete("/remove/student/:id", verify_token, async (req, res) => {
     res.status(200).send({ result: "success" });
   } else {
     res.status(203).send({ result: "somwthing is wrong" });
+  }
+});
+
+router.post("/check/email", async (req, res) => {
+  var result = await users.find({
+    email: req.body.email,
+  });
+
+  // console.log(result, "result");
+  if (result.length > 0) {
+    var otp = otpGenerator.generate(6, {
+      upperCaseAlphabets: false,
+      specialChars: false,
+    });
+
+    // console.log(updateOtp, "updateotp");
+    // if (result1) {
+    //   let mailDetails = {
+    //     from: process.env.REACT_EMAIL,
+    //     to: req.body.email,
+    //     subject: "E-Grivience Portal password reset otp",
+    //     html: ` <p> you are recieving because you are(someone) You have request to reset the password in e- grievence portal <br/> <p> otp:</p> - <b>${otp} </b> </p>`,
+    //   };
+
+    //   mailTransporter.sendMail(mailDetails, function (err, data) {
+    //     if (data && result1) {
+    //       res.status(200).send({ result: "otp sent successfully" });
+    //     } else {
+    //       res.status(203).send({ result: "something went wrong" });
+    //     }
+    //   });
+    // }
+  } else {
+    res.status(201).send({ msg: "user not found" });
   }
 });
 

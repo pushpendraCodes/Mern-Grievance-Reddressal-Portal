@@ -56,6 +56,9 @@ let usersSchema = new mongoose.Schema({
     type:String,
 
   },
+  otp:{
+    type:String
+  }
 
 });
 module.exports = mongoose.model("users", usersSchema);

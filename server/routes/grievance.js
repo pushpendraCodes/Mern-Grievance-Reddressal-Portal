@@ -22,8 +22,8 @@ router.post(
       _id: req.params.id,
     });
     const files = req.files["file"];
-    console.log(files, "files");
-    console.log(req.body, "body");
+    // console.log(files, "files");
+    // console.log(req.body, "body");
     let path = [];
     if (result) {
       if (files) {
@@ -62,7 +62,7 @@ router.post(
 
 router.post("/get/grievance", verifyToken, async (req, res) => {
 
-  console.log(req.body.sort,"sort")
+  // console.log(req.body.sort,"sort")
   if (req.body.sort === "All") {
     let result = await grievance.find();
     if (result) {
@@ -155,7 +155,7 @@ router.get("/History/grievance/student/:id", verifyToken, async (req, res) => {
   });
 
   if (result) {
-    console.log(result)
+    // console.log(result)
     res.status(200).send({result:result});
   }else{
     res.status(201).send({result:"no data "});
