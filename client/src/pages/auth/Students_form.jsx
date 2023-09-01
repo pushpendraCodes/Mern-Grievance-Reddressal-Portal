@@ -285,11 +285,11 @@ const Students_form = () => {
               <option> select </option> <option value="1"> 1 Sem</option>{" "}
               <option value="2"> 2 Sem</option>
                <option value="3"> 3 Sem </option>{" "}
-               <option value="3"> 4 Sem</option>{" "}
-               <option value="3">5 Sem</option>{" "}
-               <option value="3"> 6 Sem </option>{" "}
-               <option value="3"> 7 Sem </option>{" "}
-               <option value="3"> 8 Sem </option>{" "}
+               <option value="4"> 4 Sem</option>{" "}
+               <option value="5">5 Sem</option>{" "}
+               <option value="6"> 6 Sem </option>{" "}
+               <option value="7"> 7 Sem </option>{" "}
+               <option value="8"> 8 Sem </option>{" "}
             </select>{" "}
             {formiKMessage("semester")}{" "}
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">

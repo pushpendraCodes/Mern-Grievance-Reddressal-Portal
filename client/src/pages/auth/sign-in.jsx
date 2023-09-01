@@ -117,17 +117,27 @@ export function SignIn() {
   const [c_pw, setc_pw] = useState("");
   const [bg, setbg] = useState("light");
   const [open_modal, setOpen_modal] = useState(false);
-  const handleOpen = () => setOpen_modal(true);
+  const handleOpen = () => {
+    setOpen_modal(true)
+    setMSG(" ");
+  };
+
+
   const handleClose = () => setOpen_modal(false);
   const [otp, setOtp] = useState("");
   const submit = async () => {
-    let res = await axios.post(`${url}/check/email`, { email: email });
 
-    if (res.status === 200) {
-      setvalid(true);
-    } else {
-      setemail(null);
-      setMSG(res.data.msg);
+    if (email) {
+      let res = await axios.post(`${url}/check/email`, { email: email });
+
+      if (res.status === 200) {
+        setvalid(true);
+      } else {
+        setemail(null);
+        setMSG(res.data.msg);
+      }
+    }else{
+      setMSG("email is required");
     }
   };
   const style = {
@@ -180,36 +190,13 @@ export function SignIn() {
                 renderInput={(props) => <input {...props} />}
               />
             )}
-            {/* {isValid && (
-              <>
-                <TextField
-                  onChange={(e) => {
-                    setemail(e.target.value);
-                  }}
-                  id="standard-basic"
-                  label="Email"
-                  className="my-2 "
-                  sx={{ width: "35ch" }}
-                  variant="standard"
-                />
-                <TextField
-                  onChange={(e) => {
-                    setemail(e.target.value);
-                  }}
-                  id="standard-basic"
-                  label="Email"
-                  className="my-2 "
-                  sx={{ width: "35ch" }}
-                  variant="standard"
-                />
-              </>
-            )} */}
 
             <br />
             <Typography className="my-1 text-red-500" id="modal-modal-title">
               {MSG}
             </Typography>
             <br />
+            <div className="flex justify-between">
             <Button
               variant="contained"
               className="my-3"
@@ -219,6 +206,19 @@ export function SignIn() {
             >
               Submit
             </Button>
+            <Button
+              variant="contained"
+              className="my-3"
+              size="small"
+              color="primary"
+
+              onClick={handleClose}
+            >
+             Close
+            </Button>
+            </div>
+
+
           </Box>
         </Modal>
       </div>
@@ -253,7 +253,7 @@ export function SignIn() {
 
           <MdDarkMode
             style={{ color: bg === "black" ? "white" : "gray" }}
-            className="cursor-pointer mr-2"
+            className="mr-2 cursor-pointer"
             onClick={() => {
               setbg("black");
             }}
@@ -351,11 +351,11 @@ export function SignIn() {
                   </label> */}
                 </div>
 
-                <div class="mb-6 flex items-center justify-between">
+                {/* <div class="mb-6 flex items-center justify-between">
                   <a onClick={handleOpen} className="text-blue-500" href="#!">
                     Forgot password?
                   </a>
-                </div>
+                </div> */}
 
                 <div class=" lg:text-left">
                   <button

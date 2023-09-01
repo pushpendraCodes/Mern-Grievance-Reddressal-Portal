@@ -55,13 +55,13 @@ export const routes = [
 
 
 
-      {
-        icon: <Diversity1Icon {...icon} />,
-        name: " Committee",
-        path: "/committee",
-        element: <Commity/>,
-        role:["s"]
-      },
+      // {
+      //   icon: <Diversity1Icon {...icon} />,
+      //   name: " Committee",
+      //   path: "/committee",
+      //   element: <Commity/>,
+      //   role:["s"]
+      // },
 
       {
         icon: <NotificationsActiveIcon {...icon} />,
