@@ -5,12 +5,19 @@ const port = process.env.PORT||4000
 require("./db/db")
 const http = require("http")
 let cors = require("cors")
+
 app.use(cors());
-app.use(express.json())
+let bodyParser = require("body-parser")
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/upload', express.static('upload'));
 // const router = require("./routes/user")
 
 // app.use(express.static(path.resolve(__dirname, 'dist')));
+
+app.get("/",(req,res)=>{
+  res.send("hello node js")
+})
 
 app.use("/" ,require("./routes/user"))
 app.use("/" ,require("./routes/grievance"))
