@@ -182,25 +182,20 @@ const Grievance = () => {
 
     if (res.status === 200) {
       setOpen(false);
-
       setgrievance(res.data.result);
     } else {
       setOpen(false);
     }
   };
 
-
-
   // hover students details----
 
-const [user ,setUserDetails] = useState()
+  const [user, setUserDetails] = useState();
 
   const userDetails = (id) => {
+    let filter = grievance.filter((item) => id === item._id);
 
-    let filter = grievance.filter((item)=>id === item._id)
-
-    setUserDetails(filter)
-
+    setUserDetails(filter);
   };
 
   // admin delete grievance---
@@ -365,7 +360,6 @@ const [user ,setUserDetails] = useState()
       setOpen(false);
     }
   };
-
 
   const delete_stu_grievance = async (id) => {
     if (window.confirm("are you sure")) {
@@ -583,9 +577,8 @@ const [user ,setUserDetails] = useState()
 
             <ToastContainer />
 
-
             <h2 className="text-bold text-center text-green-400 ">
-               Grievance History
+              Grievance History
             </h2>
             <div>
               <Backdrop
