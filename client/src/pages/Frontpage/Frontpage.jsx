@@ -65,21 +65,7 @@ const Frontpage = () => {
                     {/* <p class="description">Lorem ipsum dolor sit amet conse ctetur .</p> */}
                   </div>
                 </div>
-                <div class="col-lg-4 col-md-4 col-sm-6 my-2">
-                  <div class="serviceBox cyan">
-                    <div class="service-icon">
-                      <span>
-                        {" "}
-                        <HiUserGroup />
-                      </span>
-                    </div>
-                    <Link to="/auth/sign-in">
-                      {" "}
-                      <h3 class="title">Teacher/Staff</h3>
-                    </Link>
-                    {/* <p class="description">Lorem ipsum dolor sit amet conse ctetur .</p> */}
-                  </div>
-                </div>
+
                 {/* <div class="col-lg-4 col-md-4 col-sm-6 my-2">
                   <div class="serviceBox cyan">
                     <div class="service-icon">

@@ -11,16 +11,15 @@ const { getEventListeners } = require("nodemailer/lib/xoauth2");
 
 const mailTransporter = require("../MiddileWare/nodemailer");
 const validator = require("validator");
+
 router.post("/api/login", async (req, res) => {
   if (req.body.email && req.body.password) {
     let user = await users.findOne({
       email: req.body.email,
     });
-    // console.log(req.body.password);
+
     if (user && user.is_active === true) {
       bcrypt.compare(req.body.password, user.password, (err, result) => {
-        // console.log(result, "user");
-        // console.log(user, "user");
         if (result) {
           const token = jwt.sign(
             {
@@ -50,6 +49,73 @@ router.post("/api/login", async (req, res) => {
       msg: "both fields required",
     });
   }
+});
+router.post("/api/demoAdmin/login", async (req, res) => {
+    let user = await users.findOne({
+      email: "admin@gmail.com",
+    });
+
+    if (user && user.is_active === true) {
+      bcrypt.compare("1234", user.password, (err, result) => {
+        if (result) {
+          const token = jwt.sign(
+            {
+              username: user.username,
+            },
+            jwtkey
+          );
+          return res.status(200).send({
+            token: token,
+            u_type: user.u_type,
+            name: user.name,
+            user_id: user._id,
+          });
+        } else {
+          res.status(203).send({
+            msg: "Invalid password",
+          });
+        }
+      });
+    } else {
+      return res.status(201).send({
+        msg: "user not found",
+      });
+    }
+
+});
+router.post("/api/demoStudent/login", async (req, res) => {
+    let user = await users.findOne({
+      email: "pushpendrapatel8055@gmail.com",
+    });
+
+    console.log(user,"user")
+    if (user && user.is_active === true) {
+      bcrypt.compare("1234", user.password, (err, result) => {
+        if (result) {
+          const token = jwt.sign(
+            {
+              username: user.username,
+            },
+            jwtkey
+          );
+          return res.status(200).send({
+            token: token,
+            u_type: user.u_type,
+            name: user.name,
+            user_id: user._id,
+          });
+        } else {
+          res.status(203).send({
+            msg: "Invalid password",
+          });
+        }
+      });
+    } else {
+      return res.status(201).send({
+        msg: "user not found",
+      });
+    }
+
 });
 
 router.post("/resister/student", async (req, res) => {
@@ -169,12 +235,9 @@ router.post("/send/details", verify_token, async (req, res) => {
     html: ` <p> you are recieving because you are(someone) You have registerd to grievence portal <br/> <b> email:</b> ${req.body.email} <br/> <b>Paaword</b>: ${password}  </p>`,
   };
 
-
-
   mailTransporter.sendMail(mailDetails, async function (err, data) {
     if (data) {
-
-     await  users.findByIdAndUpdate(
+      await users.findByIdAndUpdate(
         {
           _id: req.body._id,
         },
@@ -189,8 +252,7 @@ router.post("/send/details", verify_token, async (req, res) => {
         }
       );
 
-        res.status(200).send({ result: "Email sent successfully" });
-
+      res.status(200).send({ result: "Email sent successfully" });
     } else {
       console.log(err, "err");
       res.status(203).send({ result: "something went wrong" });

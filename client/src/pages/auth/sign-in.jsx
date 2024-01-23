@@ -33,6 +33,96 @@ export function SignIn() {
 
   let navigate = useNavigate();
 
+
+
+
+  async function demoAdmin(){
+
+    setOpen(true);
+
+    try {
+      setOpen(true);
+      let res = await axios.post(`${url}/api/demoAdmin/login`);
+
+      if (res.status === 200) {
+        setOpen(false);
+        setmsg("successfully loged in");
+        setresolved(true);
+
+        localStorage.setItem("user", JSON.stringify(res.data.token));
+        localStorage.setItem("u_type", JSON.stringify(res.data.u_type));
+        localStorage.setItem("user_name", JSON.stringify(res.data.name));
+        localStorage.setItem("user_id", JSON.stringify(res.data.user_id));
+
+        if (res.data.u_type === "student") {
+          navigate("/dashboard/grievance");
+        }
+        if (res.data.u_type === "s") {
+          navigate("/dashboard/home");
+        }
+      }
+      setOpen(false);
+      toast.error(res.data.msg, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    } catch (error) {
+      setOpen(false);
+
+     console.log(error,"error")
+    }
+
+  }
+  async function demoStudent(){
+
+    setOpen(true);
+
+    try {
+      setOpen(true);
+      let res = await axios.post(`${url}/api/demoStudent/login`);
+console.log(res,"res")
+      if (res.status === 200) {
+        setOpen(false);
+        setmsg("successfully loged in");
+        setresolved(true);
+
+        localStorage.setItem("user", JSON.stringify(res.data.token));
+        localStorage.setItem("u_type", JSON.stringify(res.data.u_type));
+        localStorage.setItem("user_name", JSON.stringify(res.data.name));
+        localStorage.setItem("user_id", JSON.stringify(res.data.user_id));
+
+        if (res.data.u_type === "student") {
+          navigate("/dashboard/grievance");
+        }
+        if (res.data.u_type === "s") {
+          navigate("/dashboard/home");
+        }
+      }
+      setOpen(false);
+      toast.error(res.data.msg, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    } catch (error) {
+      setOpen(false);
+
+      console.log(error,"error")
+    }
+
+  }
+
   const onSubmit = async (values) => {
     setOpen(true);
 
@@ -71,16 +161,7 @@ export function SignIn() {
     } catch (error) {
       setOpen(false);
 
-      toast.error(res.data.msg, {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
+      console.log(error,"error")
     }
   };
 
@@ -380,6 +461,30 @@ export function SignIn() {
                       </a>
                     </Link>
                   </p>
+
+                </div>
+                <div>
+                <p class="mb-0  text-sm font-semibold">
+
+
+  <button
+  onClick={demoAdmin}
+    class="text-primary hover:text-danger-600 focus:text-danger-600 active:text-danger-700 transition duration-150 ease-in-out"
+  >
+    login as demo admin account?
+  </button>
+
+</p>
+<p class="mb-0  text-sm font-semibold">
+
+
+  <button
+  onClick={demoStudent}
+    class="text-primary hover:text-danger-600 focus:text-danger-600 active:text-danger-700 transition duration-150 ease-in-out"
+  >
+    login as demo student account?
+  </button>
+</p>
                 </div>
               </form>
             </div>
