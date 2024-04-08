@@ -73,7 +73,7 @@ env-server - `REACT_DB_URL`
 
 live - https://student-grievance-rederessal-portal.netlify.app/
 
-video demo - https://nextjs-portfolio-five-lilac.vercel.app/grievnace_video.mp4
+video demo - https://pushpendrapatel.vercel.app/grievnace_video.mp4
 
 ## Contributing
 
